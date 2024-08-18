@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
@@ -6,7 +7,25 @@ import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { Container, Grid, Card, CardActionArea, CardContent, Typography, IconButton, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { db } from '@/firebase'; // Assuming you have a firebase.js file exporting the db instance
+import { createTheme, ThemeProvider, CssBaseline } from '@mui/material/styles';
 
+// Create a dark theme
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#90caf9',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1d1d1d',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#90caf9',
+    },
+  },
+});
 
 export default function Flashcard() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -67,66 +86,68 @@ export default function Flashcard() {
   }
 
   return (
-    <Container maxWidth="100vw" sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h2" align="center" gutterBottom>
-        Saved Flashcards
-      </Typography>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Container maxWidth="100vw" sx={{ mt: 4 }}>
+        <Typography variant="h4" component="h2" align="center" gutterBottom>
+          Saved Flashcards
+        </Typography>
 
-      {flashcards.length === 0 ? (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-          
-            No Saved Collections Yet 
-          </Typography>
-          
-          <Button variant="contained" color="primary" onClick={handleStartCreating}>
-            Start Creating Collections
-          </Button>
-        </Box>
-      ) : (
-        <Grid container spacing={3} sx={{ mt: 2 }}>
-          {flashcards.map((flashcard, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card>
-                <CardActionArea onClick={() => handleCardClick(flashcard.name)}>
-                  <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="h5" component="div">
-                      {flashcard.name}
-                    </Typography>
-                    <IconButton
-                      onClick={(event) => handleDeleteClick(event, flashcard)} // Pass event and flashcard
-                      aria-label="delete"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+        {flashcards.length === 0 ? (
+          <Box sx={{ textAlign: 'center', mt: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              No Saved Collections Yet
+            </Typography>
+            <Button variant="contained" color="primary" onClick={handleStartCreating}>
+              Start Creating Collections
+            </Button>
+          </Box>
+        ) : (
+          <Grid container spacing={3} sx={{ mt: 2 }}>
+            {flashcards.map((flashcard, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card sx={{ backgroundColor: darkTheme.palette.background.paper }}>
+                  <CardActionArea onClick={() => handleCardClick(flashcard.name)}>
+                    <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Typography variant="h5" component="div" color={darkTheme.palette.text.primary}>
+                        {flashcard.name}
+                      </Typography>
+                      <IconButton
+                        onClick={(event) => handleDeleteClick(event, flashcard)} // Pass event and flashcard
+                        aria-label="delete"
+                        sx={{ color: darkTheme.palette.text.secondary }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
 
-      {/* Confirmation Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-      >
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the flashcard collection "{selectedFlashcard?.name}"? This action cannot be reversed.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirmDelete} color="secondary" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+        {/* Confirmation Dialog */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+        >
+          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete the flashcard collection "{selectedFlashcard?.name}"? This action cannot be reversed.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={confirmDelete} color="secondary" autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </ThemeProvider>
   );
 }
