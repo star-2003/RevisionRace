@@ -6,7 +6,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SignedOut, SignedIn, UserButton } from '@clerk/nextjs';
 import getStripe from '@/utils/get-stripe';
 import Head from 'next/head';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 // Create a dark theme
 const darkTheme = createTheme({
@@ -57,7 +56,7 @@ export default function HomePage() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Revision Race <RocketLaunchIcon />
+              Revision Race <span aria-label="a rocket blasting off" role="img">🚀</span>
             </Typography>
             <SignedOut>
               <Button color="inherit" href="/sign-in">Login</Button>
@@ -71,7 +70,7 @@ export default function HomePage() {
 
         <Box sx={{ textAlign: 'center', my: 4 }}>
           <Typography variant="h2" component="h1" gutterBottom>
-            Welcome to Revision Race <RocketLaunchIcon />
+            Welcome to Revision Race <span aria-label="a rocket blasting off" role="img">🚀</span>
           </Typography>
           <Typography variant="h5" component="h2" gutterBottom>
             The easiest way to create flashcards from your text.
